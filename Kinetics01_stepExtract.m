@@ -6,15 +6,14 @@ clc;
 pathData = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/DATA/');
 addpath('/Users/claraziane/Documents/Académique/Informatique/projetDT'); %Path to functions
 
-Participants = {'P12'};
+Participants = {'P07'}; %P12; 'P10; 'P18; 'P27'; 'P41'
 Sessions     = {'RW'; 'FB'};
-Conditions   = {'preWalkSP';  'preWalkST'; 'preWalkDT';...
-                'postWalkST'; 'postWalkDT';...
-               'postWalkSP'};
-            
+Conditions   = {'preWalkST';  'preWalkDT';...
+               'postWalkST'; 'postWalkDT'; 'postWalkSP'}; %'preWalkSP'; 
+           
 for iParticipant = length(Participants)
 
-    for iSession = 1%:length(Sessions)
+    for iSession = 2%length(Sessions)
 
         % Declare paths
         pathImport = ([pathData 'RAW/' Participants{iParticipant} '/' Sessions{iSession} '/QTM/']);
@@ -29,7 +28,7 @@ for iParticipant = length(Participants)
         for iCondition = 1:length(Conditions)
 
             Data  = load([pathImport Conditions{iCondition} '.mat']);
-            Freq  = Data.(Conditions{iCondition}).Force(1).Frequency;
+           Freq  = Data.(Conditions{iCondition}).Force(1).Frequency;
 
             if strcmpi(Conditions{iCondition}(end-1:end), 'SP')
                 Time = Freq*60*1;

@@ -6,15 +6,14 @@ clc;
 pathData = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/DATA/');
 addpath('/Users/claraziane/Documents/Académique/Informatique/projetDT'); %Path to functions
 
-Participants = {'P12'};
+Participants = {'P07'}; %P12; 'P10; 'P18'; 'P27'; 'P41'
 Sessions     = {'RW'; 'FB'};
-Conditions   = {'preTapSP';  'preTapST'; 'preTapDT';...
-                'postTapST'; 'postTapDT';...
-               'postTapSP'};
+Conditions   = {'preTapST';  'preTapDT';...
+                'postTapST'; 'postTapDT'; 'postTapSP'}; % 'preTapSP'; 
             
 for iParticipant = length(Participants)
 
-    for iSession = 1:length(Sessions)
+    for iSession = 2%length(Sessions)
 
         % Declare paths
         pathImport = ([pathData 'RAW/' Participants{iParticipant} '/' Sessions{iSession} '/QTM/']);
@@ -44,12 +43,12 @@ for iParticipant = length(Participants)
             [mvtOnset, mvtFreq, IMI, cadence] = getTaps(Kinetics, Freq);
 
             % Store data in structure
-            dataKin.([Conditions{iCondition}]).mvtOnset(:,1) = mvtOnset;   % Store tap onsets in structure
+            dataKin.(Conditions{iCondition}).mvtOnsets       = mvtOnset;
             dataKin.([Conditions{iCondition}]).mvtFreq(1,1)  = mvtFreq;    % Store tap frequency in structure
             dataKin.(Conditions{iCondition}).cadence         = cadence;    % Store number of taps per minute in structure
             dataKin.([Conditions{iCondition}]).IMI(:,1)      = IMI;        % Store inter-tap interval in structure
             dataKin.(Conditions{iCondition}).sampFreq        = Freq;
-                       
+
             % Save structure
             save([pathExport '/dataKin'], 'dataKin');
 
