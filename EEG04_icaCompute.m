@@ -11,7 +11,7 @@ addpath('/Users/claraziane/Documents/Académique/Informatique/bemobil-pipeline')
 addpath('/Users/claraziane/Documents/Académique/Informatique/bemobil-pipeline/EEG_preprocessing')
 addpath('/Users/claraziane/Documents/Académique/Informatique/bemobil-pipeline/AMICA_processing')
 
-Participants = {'P07'};
+Participants = {'P25'};
 Sessions     = {'RW'; 'FB'};
 Conditions   = {'preTapST';  'preTapDT';  'postTapST'; 'postTapDT';...
                'preWalkST'; 'preWalkDT'; 'postWalkST'; 'postWalkDT'};
@@ -27,7 +27,7 @@ for iParticipant = 1:length(Participants)
         pathExport = [pathImport 'All/' Sessions{iSession} '/'];
         load([pathExport 'icReject.mat'])
 
-        for iCondition = 1:length(Conditions) %1 P07?
+        for iCondition = [5:8]%[1:4]%3:length(Conditions)
            
             condStr = Conditions{iCondition};
             pathRoot  = fullfile(pathImport, '03_Preprocessing', Participants{iParticipant}, Sessions{iSession},Conditions{iCondition});

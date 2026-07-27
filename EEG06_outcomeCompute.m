@@ -17,13 +17,13 @@ addpath('/Users/claraziane/Documents/Académique/Informatique/tweetCodes/'); %Cu
 addpath('/Users/claraziane/Documents/Académique/Informatique/Toolbox/CircStat2012a/'); %For computing phase consistency
 addpath('/Users/claraziane/Documents/Académique/Informatique/MATLAB/eeglab2021.1'); %EEGLab
 
-Participants = {'P26'}; %'P10'; 'P12'; 'P18'; 'P27'; 'P29'; 'P41'
+Participants = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'};
 Sessions     = {'RW'; 'FB'};
 Conditions   = {'preTapST';  'preTapDT';  'postTapST'; 'postTapDT';...
                'preWalkST'; 'preWalkDT'; 'postWalkST'; 'postWalkDT'};
 
 eeglab;
-for iParticipant = 1:length(Participants)
+for iParticipant = 1%:length(Participants)
 
     for iSession = 1%length(Sessions)
 
@@ -37,8 +37,10 @@ for iParticipant = 1:length(Participants)
             load([pathResults Participants{iParticipant} '/'  Sessions{iSession} '/EEG/resultsEEG.mat'])
         end
 
-        for iCondition = 1:length(Conditions)
-           
+        for iCondition = 1%length(Conditions)
+            disp(Participants{iParticipant})
+            disp(Conditions{iCondition})
+
             % Load data
             load([pathData Participants{iParticipant} '/'  Sessions{iSession} '/EEG/' Conditions{iCondition} '_compRESS.mat']);
 

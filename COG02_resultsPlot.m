@@ -10,14 +10,15 @@ Participants = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; '
 
 Sessions     = {'RW'; 'FB'};
 Conditions   = {'preTapDT'; 'postTapDT'; 'preWalkDT'; 'postWalkDT'};
+figLabels    = {'preTapDT'; 'postTapDT'; 'preWalkDT'; 'postWalkDT'; 'preTapDT'; 'postTapDT'; 'preWalkDT'; 'postWalkDT'};
 xLabels      = {  'preTap';   'postTap';   'preWalk';   'postWalk'};  
-Comparisons = {'DT'};
+Comparisons  = {'DT'};
+
+% Preallocate matrix
+Errors   = nan(length(Participants),length(Conditions), length(Sessions));
 
 for iSession = 1:length(Sessions)
     iPlot = 1;
-
-    % Preallocate matrix
-    Errors   = nan(length(Participants),length(Conditions));
 
     for iCondition = 1:length(Conditions)
 
@@ -26,17 +27,32 @@ for iSession = 1:length(Sessions)
             pathImport = [pathResults Participants{iParticipant} '/' Sessions{iSession} '/Behavioural/'];
             load([pathImport 'resultsOddball.mat']);
 
-            Errors(iParticipant, iCondition) = resultsOddball.(Conditions{iCondition});
+            Errors(iParticipant, iCondition, iSession) = resultsOddball.(Conditions{iCondition});
                
         end % End Participants
 
     end % End Conditions
     
+    % Remove outliers
+    [Errors(:,:,1)] = removeOutliers(Errors(:,:,1));
+
     % Plot
-    plotScatter(Errors, Comparisons, xLabels, 'Number of Errors');
+    plotScatter(Errors(:,:,iSession), Comparisons, xLabels, 'Number of Errors');
    
     % Save
-    saveas(figure(1), [pathResults 'All/' Sessions{iSession} '/Cognition/fig_cogOddball.png'])
-    close all;
+    saveas(figure(iSession), [pathResults 'All/' Sessions{iSession} '/Cognition/fig_cogOddball_noOutliers.png'])
 
 end % End Sessions
+
+% Compute delta perf
+deltaErrors = Errors(:,2:2:end,:) - Errors(:,1:2:end-1,:);
+
+% Plot both sessions side by side
+plotScatter(reshape(Errors, size(Errors,1), [],1), Comparisons, figLabels, 'Number of Errors');
+plotScatter(reshape(deltaErrors, size(deltaErrors,1), [],1), Comparisons, {'Tap__RW'; 'Walk__RW'; 'Tap__FB'; 'Walk__FB'}, 'Number of Errors');
+
+% Save
+saveas(figure(iSession+1), [pathResults 'All/Cognition/fig_cogOddball_noOutliers.png'])
+saveas(figure(iSession+2), [pathResults 'All/Cognition/fig_deltaOddball_noOutliers.png'])
+
+close all;

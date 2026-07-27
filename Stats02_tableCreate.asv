@@ -4,13 +4,13 @@ clc;
 
 % Declare paths
 pathResults  = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/');
-addpath('/Users/claraziane/Documents/Académique/Informatique/Toolbox/CircStat2012a/');
+addpath('/Users/claraziane/Documents/AcadÃ©mique/Informatique/Toolbox/CircStat2012a/');
 
 Participants   = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'}; %RW
 factorGame     = {'RW'; 'FB'};
 factorTime     = {'pre'; 'post'};
-factorMovement = {'Tap';  'Walk'}; % 'Walk'
-factorLoad     = {'ST'; 'DT'}; %'SP'; 'ST'; 
+factorMovement = {'Tap';}; % 'Walk'
+factorLoad     = {'DT'}; %'SP'; 'ST'; 
 
 %Pre-allocating matrices
 ID       = [];
@@ -161,14 +161,14 @@ end
 % resultsTable = table(ID, Game, Movement, Load, mvtIMI, mvtVariability, Flexibility, Inhibition, workingMemory, ...
 %     'VariableNames', {'ID', 'Game', 'Movement', 'Load', 'IMI', 'CV', 'Flexibility', 'Inhibition', 'workingMemory'});
 % % Save table
-% writetable(resultsTable, [pathResults '/All/statsTableBehav_noOutliers.csv'])
+% writetable(resultsTable, [pathResults '/All/statsTableBehav.csv'])
 
 % % Sync only
-resultsTable = table(ID, Game, Movement, Load, syncAccuracy, syncConsistency, power, stabilityIndex, phaseCoupling, Flexibility, Inhibition, workingMemory, ...
-'VariableNames', {'ID', 'Game', 'Movement', 'Load', 'syncAccuracy', 'syncConsistency', 'Power', 'stabilityIndex', 'phaseCoupling', 'Flexibility', 'Inhibition', 'workingMemory'});
-writetable(resultsTable, [pathResults '/All/statsTableSync_noOutliers.csv'])
+% resultsTable = table(ID, Game, Movement, Load, syncAccuracy, syncConsistency, power, stabilityIndex, phaseCoupling, Flexibility, Inhibition, workingMemory, ...
+% 'VariableNames', {'ID', 'Game', 'Movement', 'Load', 'syncAccuracy', 'syncConsistency', 'Power', 'stabilityIndex', 'phaseCoupling', 'Flexibility', 'Inhibition', 'workingMemory'});
+% writetable(resultsTable, [pathResults '/All/statsTableSync.csv'])
 
 % % BAASTA only
-% resultsTable = table(ID, Game, musicConsistency, Flexibility, Inhibition, workingMemory, ...
-% 'VariableNames', {'ID', 'Game', 'musicConsistency', 'Flexibility', 'Inhibition', 'workingMemory'});
-% writetable(resultsTable, [pathResults '/All/statsTableBAASTA.csv'])
+resultsTable = table(ID, Game, musicConsistency, Flexibility, Inhibition, workingMemory, ...
+'VariableNames', {'ID', 'Game', 'Movement', 'Load', 'musicConsistency', 'Flexibility', 'Inhibition', 'workingMemory'});
+writetable(resultsTable, [pathResults '/All/statsTableBAASTA.csv'])

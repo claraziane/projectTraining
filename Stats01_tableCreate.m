@@ -6,11 +6,11 @@ clc;
 pathResults  = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/');
 addpath('/Users/claraziane/Documents/Académique/Informatique/Toolbox/CircStat2012a/');
 
-Participants   = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'}; %RW
+Participants   = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'};
 factorGame     = {'RW'; 'FB'};
 factorTime     = {'pre'; 'post'};
 factorMovement = {'Tap'; 'Walk'};
-factorLoad     = {'SP'; 'ST'; 'DT'}; % 'SP'; 
+factorLoad     = {'SP'; 'ST'; 'DT'};
 
 %Pre-allocating matrices
 ID       = [];

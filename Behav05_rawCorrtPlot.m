@@ -7,21 +7,21 @@ pathResults  = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMon
 addpath('/Users/claraziane/Documents/Académique/Informatique/projectFig/');
 addpath('/Users/claraziane/Documents/Académique/Informatique/Toolbox/CircStat2012a/');
 
-Participants = {'P10'; 'P12'; 'P18'; 'P27'; 'P41'};
+Participants = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'}; %RW
 Sessions     = {'RW'; 'FB'};
-Conditions   = {'preTapST';  'preTapDT';  'preWalkST';  'preWalkST';...
+Conditions   = {'preTapST';  'preTapDT';  'preWalkST';  'preWalkDT';...
                'postTapST'; 'postTapDT'; 'postWalkST'; 'postWalkDT';};
 
 
-varX = {'power'; 'phaseR'; 'stabilityIndex';  'imiCV'}; 
-varY = {'imiMean'; 'imiCV'; 'phaseDegMean'; 'resultantLength'; 'power'; 'phaseR'; 'stabilityIndex'};
+varX = {'power'; 'phaseR'; 'stabilityIndex'}; 
+varY = {'imiMean'; 'imiCV'; 'phaseDegMean'; 'resultantLength'};
 
-xLabels = {'Power (SNR)'; 'Inter-Trial Phase Coherence'; 'Stability Index (Hz)'; 'Coefficient of Variation_{Inter-Movement Interval}'};
-yLabels = {'Inter-Movement Interval (ms)'; 'Coefficient of Variation_{Inter-Movement Interval}'; 'Synchronization Accuracy (°)'; 'Synchronization Consistency (logit)'; 'Power (SNR)'; 'Inter-Trial Phase Coherence'; 'Stability Index (Hz)'}';
+xLabels = {'Power (SNR)'; 'Phase Coupling'; 'Stability Index (Hz)'};
+yLabels = {'Inter-Movement Interval (ms)'; 'Coefficient of Variation_{Inter-Movement Interval}'; 'Synchronization Accuracy (°)'; 'Synchronization Consistency (logit)'}';
 
 corrType = 'Spearman';
 
-for iSession = 1%:length(Sessions)
+for iSession = 2%length(Sessions)
     iFig = 1;
 
     for iX = 1:length(varX)
@@ -62,11 +62,15 @@ for iSession = 1%:length(Sessions)
                 end
 
             end
+
+            % Remove outliers
+            [dataX] = removeOutliers(dataX);
+            [dataY] = removeOutliers(dataY);
             
             % Plot
             [corrType] = plotCorrel(dataX, dataY, xLabel, yLabel, Conditions, corrType);
 %             sgtitle([figTitles{iVar}], 'FontSize', 20, 'FontWeight', 'bold')
-            saveas(figure(iFig), ['/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/All/' Sessions{iSession} '/' corrType '/scoresRaw/fig_' varY{iY} 'vs' varX{iX} '.png']);
+            saveas(figure(iFig), ['/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/All/' Sessions{iSession} '/' corrType '/scoresRaw/fig_' varY{iY} 'vs' varX{iX} '_noOutliers.png']);
 
             clear dataX dataY
             iFig = iFig+1;

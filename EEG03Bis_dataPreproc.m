@@ -17,7 +17,7 @@ addpath('/Users/claraziane/Documents/Académique/Informatique/bemobil-pipeline/E
 addpath('/Users/claraziane/Documents/Académique/Informatique/bemobil-pipeline/AMICA_processing')
 addpath('/Users/claraziane/Documents/Académique/Informatique/MATLAB/zapline-plus-main')
 
-Participants = {'P13'};
+Participants = {'P25'};
 Sessions     = {'RW'; 'FB'};
 Conditions   = {'preTapST';  'preTapDT';  'postTapST'; 'postTapDT';...
                'preWalkST'; 'preWalkDT'; 'postWalkST'; 'postWalkDT'};
@@ -28,7 +28,7 @@ extRoot  = '_events.set';
 projectTraining_bemobil_config
 for iParticipant = length(Participants)
 
-    for iSession = 1%length(Sessions)
+    for iSession = 2%length(Sessions)
 
         pathExport = [pathImport 'All/' Sessions{iSession} '/'];
         pathRoot  = fullfile(pathImport, Participants{iParticipant}, Sessions{iSession}, '/EEG');
@@ -38,7 +38,7 @@ for iParticipant = length(Participants)
             load([pathImport '03_Preprocessing/' Participants{iParticipant}, '/', Sessions{iSession}, '/chans2interp.mat']);
 %         end
 
-        for iCondition =[2 5 6 7] %1:length(Conditions) 
+        for iCondition = [5:8] %1:length(Conditions) 
             path2save = [pathImport '03_Preprocessing' filesep  Participants{iParticipant} filesep Sessions{iSession} filesep  Conditions{iCondition}];           
 
             % Load

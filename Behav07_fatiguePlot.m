@@ -1,0 +1,63 @@
+clear all;
+close all;
+clc;
+
+% Declare paths
+pathData = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/DATA/RAW/');
+pathResults = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/');
+addpath('/Users/claraziane/Documents/Académique/Informatique/projectFig/'); %Functions for figures
+
+Participants = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'};
+Sessions     = {'RW'; 'FB'};
+xLabels      = {'T1__RW'; 'T2__RW'; 'T3__RW'; 'T4__RW'; 'T5__RW'; 'T6__RW'; 'T7__RW'; 'T8__RW'; 'T9__RW'; 'T10__RW';...
+                'T1__FB'; 'T2__FB'; 'T3__FB'; 'T4__FB'; 'T5__FB'; 'T6__FB'; 'T7__FB'; 'T8__FB'; 'T9__FB'; 'T10__FB'; };
+yLabel       = {'Fatigue'};
+Comparisons  = {'ST'};
+
+% Pre-allocate matrix
+Fatigue = nan(length(Participants),10, length(Sessions));
+
+for iParticipant = 1:length(Participants)
+
+        for iSession = 1:length(Sessions)
+
+            % No fatigue data for participants listed below
+            if strcmpi(Participants(iParticipant), 'P10') &&  strcmpi(Sessions(iSession), 'RW')
+            elseif strcmpi(Participants(iParticipant), 'P18') &&  strcmpi(Sessions(iSession), 'RW')
+            elseif strcmpi(Participants(iParticipant), 'P27') &&  strcmpi(Sessions(iSession), 'RW')
+            elseif strcmpi(Participants(iParticipant), 'P41') &&  strcmpi(Sessions(iSession), 'RW')
+            elseif  strcmpi(Participants(iParticipant), 'P12')
+            else
+
+                pathExport = [pathResults Participants{iParticipant} '/' Sessions{iSession} '/Behavioural/'];
+
+                % Load condition order
+                load([pathData Participants{iParticipant} '/' Sessions{iSession} '/Expe/conditionsOrder.mat']);
+
+                % Load fatigue data
+                DATA = readtable([pathData Participants{iParticipant} '/' Sessions{iSession} '/Expe/fatigue.xlsx']);
+
+                Fatigue(iParticipant,:,iSession) = table2array(DATA(2,:));
+
+                for iCondition = 1:length(conditionsOrder)
+                    if ismember(iCondition, [1:4])
+                        iTime = iCondition;
+                    elseif ismember(iCondition, [5:8])
+                        iTime = iCondition + 1;
+                    end
+                    resultsFatigue.([conditionsOrder{iCondition}]) = Fatigue(iParticipant,iTime,iSession);
+                end
+                save([pathExport 'resultsFatigue.mat'], 'resultsFatigue');
+                clear DATA resultsFatigue;
+
+            end
+
+        end
+
+end
+
+% Plot
+plotScatter(reshape(Fatigue, size(Fatigue,1), [], 1), Comparisons, xLabels, yLabel, 10);
+
+% Save
+saveas(figure(1), ['/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/All/Expe/fig_Fatigue.png']);
