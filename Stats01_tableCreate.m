@@ -10,7 +10,7 @@ Participants   = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21';
 factorGame     = {'RW'; 'FB'};
 factorTime     = {'pre'; 'post'};
 factorMovement = {'Tap'; 'Walk'};
-factorLoad     = {'SP'; 'ST'; 'DT'};
+factorLoad     = { 'ST'; 'DT'};% 'SP';
 
 %Pre-allocating matrices
 ID       = [];
@@ -23,6 +23,10 @@ mvtVariability  = [];
 mvtIMI          = [];
 syncAccuracy    = [];
 syncConsistency = [];
+
+power          = [];
+stabilityIndex = [];
+phaseCoupling  = [];
 
 Flexibility   = [];
 Inhibition    = [];
@@ -38,6 +42,7 @@ for iParticipant = 1:length(Participants)
 
     for iGame = 1:length(factorGame)
 
+        load([pathResults Participants{iParticipant} '/' factorGame{iGame} '/EEG/resultsEEG.mat'])
         load([pathResults Participants{iParticipant} '/' factorGame{iGame} '/Behavioural/resultsBehav.mat'])
         load([pathResults Participants{iParticipant} '/' factorGame{iGame} '/Behavioural/resultsSync.mat'])
         load([pathResults Participants{iParticipant} '/' factorGame{iGame} '/Behavioural/resultsOddball.mat'])
@@ -68,23 +73,21 @@ for iParticipant = 1:length(Participants)
                     mvtVariability  = [mvtVariability; resultsBehav.(condition{1,1}).imiCV];
                     mvtIMI          = [mvtIMI; resultsBehav.(condition{1,1}).imiMean];
 
-%                     % EEG variables
-%                     if strcmpi(resultsEEG.(condition{1,1}).compKeep, 'N')
-%                         power = [power; NaN];
-%                         phaseCoupling = [phaseCoupling; NaN];
-%                         ITPC = [ITPC; NaN];
-%                         stabilityIndex = [stabilityIndex; NaN];
-% 
-%                     else
-%                         stabilityIndex  = [stabilityIndex; resultsEEG.(condition{1,1}).stabilityIndex];
-%                         power  = [power; resultsEEG.(condition{1,1}).power];
-% 
-%                         % Logit transformation
-%                         phase = [];
-%                         phase = resultsEEG.(condition{1,1}).phaseR;
-%                         phaseCoupling = [phaseCoupling; phase];
-%                         ITPC  = [ITPC; log(phase ./ (1-phase))];
-%                     end
+                    % EEG variables
+                    if strcmpi(resultsEEG.(condition{1,1}).compKeep, 'N')
+                        power = [power; NaN];
+                        phaseCoupling = [phaseCoupling; NaN];
+                        stabilityIndex = [stabilityIndex; NaN];
+
+                    else
+                        stabilityIndex  = [stabilityIndex; resultsEEG.(condition{1,1}).stabilityIndex];
+                        power  = [power; resultsEEG.(condition{1,1}).power];
+
+                        % Logit transformation
+                        phase = [];
+                        phase = resultsEEG.(condition{1,1}).phaseR;
+                        phaseCoupling  = [phaseCoupling; log(phase ./ (1-phase))];
+                    end
 
                     %% Cognitive functions
                     Flexibility   = [Flexibility; resultsCog.Flexibility];
@@ -137,13 +140,13 @@ for iParticipant = 1:length(Participants)
 end
 
 % Convert to table format
-resultsTable = table(ID, Game, Time, Movement, Load, mvtIMI, mvtVariability, Flexibility, Inhibition, workingMemory, ...
-'VariableNames', {'ID', 'Game', 'Time', 'Movement', 'Load', 'IMI', 'CV', 'Flexibility', 'Inhibition', 'workingMemory'});
-% Save table
-writetable(resultsTable, [pathResults '/All/statsTableBehav.csv'])
+% resultsTable = table(ID, Game, Time, Movement, Load, mvtIMI, mvtVariability, Flexibility, Inhibition, workingMemory, ...
+% 'VariableNames', {'ID', 'Game', 'Time', 'Movement', 'Load', 'IMI', 'CV', 'Flexibility', 'Inhibition', 'workingMemory'});
+% % Save table
+% writetable(resultsTable, [pathResults '/All/statsTableBehav_noOutliers.csv'])
 
 % % Sync only
-% resultsTable = table(ID, Game, Time, Movement, Load, syncAccuracy, syncConsistency, Flexibility, Inhibition, workingMemory, ...
-% 'VariableNames', {'ID', 'Game', 'Time', 'Movement', 'Load', 'syncAccuracy', 'syncConsistency', 'Flexibility', 'Inhibition', 'workingMemory'});
-% writetable(resultsTable, [pathResults '/All/statsTableSync.csv'])
+resultsTable = table(ID, Game, Time, Movement, Load, syncAccuracy, syncConsistency, power, stabilityIndex, phaseCoupling, Flexibility, Inhibition, workingMemory, ...
+'VariableNames', {'ID', 'Game', 'Time', 'Movement', 'Load', 'syncAccuracy', 'syncConsistency', 'Power', 'stabilityIndex', 'phaseCoupling', 'Flexibility', 'Inhibition', 'workingMemory'});
+writetable(resultsTable, [pathResults '/All/statsTableSync_noOutliers.csv'])
 
