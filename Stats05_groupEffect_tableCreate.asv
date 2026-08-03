@@ -1,0 +1,137 @@
+clear all;
+close all;
+clc;
+
+% Declare paths
+pathResults  = ('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/');
+addpath('/Users/claraziane/Documents/Académique/Informatique/Toolbox/CircStat2012a/');
+
+Participants   = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'};
+factorGroup    = {'RW'; 'FB'};
+factorDay      = {'T1'; 'T2'};
+factorTime     = {'pre'; 'post'};
+factorMovement = {'Tap'; 'Walk'};
+factorLoad     = {'SP'; 'ST'; 'DT'}; 
+
+% Load demographic info
+dataDemog  = readtable([pathResults 'All/demographicInfo.xlsx']);
+gameAssign = readtable('/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/dataCollection/subjectAssignment.xlsx');
+
+for iMovement = 1:length(factorMovement)
+   
+    %Pre-allocating matrices
+    ID       = [];
+    Group    = [];
+    Day      = [];
+    Time     = [];
+    Load     = [];
+
+    mvtVariability  = [];
+    mvtIMI          = [];
+    syncAccuracy    = [];
+    syncConsistency = [];
+
+    power          = [];
+    stabilityIndex = [];
+    phaseCoupling  = [];
+
+    nDayElapsed    = [];
+
+    for iGroup = 1:length(factorGroup)
+
+        for iDay = 1:length(factorDay)
+
+            for iParticipant = 1:length(Participants)
+
+                % Find participant's line in gameAssign table
+                for iLine = 1:size(gameAssign,1)
+                    if strcmpi(gameAssign.ID{iLine}, Participants{iParticipant})
+                        subjline = iLine;
+                        break;
+                    end
+                end
+
+                % Find game assigned
+                Game = gameAssign.Group(iLine);
+                Game = char(Game);
+
+                if strcmpi(Game, factorGroup{iGroup})
+
+                    if iGroup == 1 && iDay == 1
+                        gameIndex = 1;
+                    elseif iGroup == 1 && iDay == 2
+                        gameIndex = 2;
+                    elseif iGroup == 2 && iDay == 1
+                        gameIndex = 2;
+                    elseif iGroup == 2 && iDay == 2
+                        gameIndex = 1;
+                    end
+
+%                     load([pathResults Participants{iParticipant} '/' factorGroup{gameIndex} '/EEG/resultsEEG.mat'])
+                    load([pathResults Participants{iParticipant} '/' factorGroup{gameIndex} '/Behavioural/resultsBehav.mat'])
+                    load([pathResults Participants{iParticipant} '/' factorGroup{gameIndex} '/Behavioural/resultsSync.mat'])
+
+                    for iTime = 1:length(factorTime)
+
+                        for iLoad = 1:length(factorLoad)
+                            condition = strcat(factorTime(iTime), factorMovement(iMovement), factorLoad(iLoad));
+
+                            % Find participant's line in demographic table
+                            ID = [ID ; {Participants{iParticipant}}];
+                            for iLine = 1:size(dataDemog,1)
+                                if strcmpi(dataDemog.ID{iLine}, Participants{iParticipant})
+                                    subjline = iLine;
+                                    break;
+                                end
+                            end
+
+                            % Fill stats table
+                            Group    = [Group; {factorGroup{iGroup}}];
+                            Day      = [Day;   {factorDay{iDay}}];
+                            Time     = [Time; {factorTime{iTime}}];
+                            Load     = [Load; {factorLoad{iLoad}}];
+                            nDayElapsed = [nDayElapsed; dataDemog.NumberOfDaysBetweenSessions(subjline)];
+
+                            mvtVariability  = [mvtVariability; resultsBehav.(condition{1,1}).imiCV];
+                            mvtIMI          = [mvtIMI; resultsBehav.(condition{1,1}).imiMean];
+
+%                             % EEG variables
+%                             if strcmpi(resultsEEG.(condition{1,1}).compKeep, 'N')
+%                                 power = [power; NaN];
+%                                 phaseCoupling = [phaseCoupling; NaN];
+%                                 stabilityIndex = [stabilityIndex; NaN];
+% 
+%                             else
+%                                 stabilityIndex  = [stabilityIndex; resultsEEG.(condition{1,1}).stabilityIndex];
+%                                 power  = [power; resultsEEG.(condition{1,1}).power];
+% 
+%                                 % Logit transformation
+%                                 phase = [];
+%                                 phase = resultsEEG.(condition{1,1}).phaseR;
+%                                 phaseCoupling  = [phaseCoupling; log(phase ./ (1-phase))];
+%                             end
+
+                        end
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+    % Convert to table format
+    resultsTable = table(ID,  Group,   Day,   Time,   Load, mvtIMI, mvtVariability, nDayElapsed, ...
+    'VariableNames',  {'ID', 'Group', 'Day', 'Time', 'Load',  'IMI',      'CV', 'daysElapsed'});
+    % Save table
+    writetable(resultsTable, [pathResults '/All/statsTable_gameOrderEffect_' factorMovement{iMovement} '_noOutliers.csv'])
+
+%     % % Sync only
+%     resultsTable = table(ID, Group, Time, Movement, Load, syncAccuracy, syncConsistency, power, stabilityIndex, phaseCoupling, Flexibility, Inhibition, workingMemory, ...
+%         'VariableNames', {'ID', 'Game', 'Time', 'Movement', 'Load', 'syncAccuracy', 'syncConsistency', 'Power', 'stabilityIndex', 'phaseCoupling', 'Flexibility', 'Inhibition', 'workingMemory'});
+%     writetable(resultsTable, [pathResults '/All/statsTableSync_noOutliers.csv'])
+
+end

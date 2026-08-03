@@ -32,9 +32,6 @@ Flexibility   = [];
 Inhibition    = [];
 workingMemory = [];
 
-BAT = [];
-BTI = [];
-
 % Load demographic info
 dataDemog = readtable([pathResults 'All/demographicInfo.xlsx']);
 
@@ -106,28 +103,6 @@ for iParticipant = 1:length(Participants)
                         syncConsistency = [syncConsistency; log(resultsSync.(condition{1,1}).resultantLength ./ (1-resultsSync.(condition{1,1}).resultantLength))];
 
                     end
-
-%                     % BAT
-%                     BAT   = [BAT; resultsBAASTA.BAT];
-% 
-%                     % Classify participants based on beat perception
-%                     [splitBAT] = findMedianSplit('BAT', [], 'resultsBAASTA');
-%                     if resultsBAASTA.BAT > splitBAT
-%                         beatPerception = [beatPerception; 'Good'];
-%                     else
-%                         beatPerception = [beatPerception; 'Poor'];
-%                     end
-% 
-%                     % BTI
-%                     BTI   = [BTI; resultsBAASTA.BTI];
-% 
-%                     % Classify participants based on BTI
-%                     [splitBTI] = findMedianSplit('BTI', [], 'resultsBAASTA');
-%                     if resultsBAASTA.BTI >= splitBTI
-%                         rhythmSkills = [rhythmSkills; 'Good'];
-%                     else
-%                         rhythmSkills = [rhythmSkills; 'Poor'];
-%                     end
 
                 end
 

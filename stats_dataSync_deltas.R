@@ -12,16 +12,14 @@ head(DATA)
 DATA$Game <- factor(DATA$Game, levels = c("RW", "FB")) 
 DATA$Movement <- factor(DATA$Movement, levels = c("Tap", "Walk")) 
 DATA$Load <- factor(DATA$Load, levels = c("ST", "DT"))
-DATA$Time <- factor(DATA$Time, levels = c("pre", "post"))
 
 # Define the specific contrasts for posthocs
 contrasts(DATA$Game) <- contr.sum
 contrasts(DATA$Movement) <- contr.sum
 contrasts(DATA$Load) <- contr.sum
-contrasts(DATA$Time) <- contr.sum
 
 # Define model
-model <- lmer(phaseCoupling ~ 1 + Game + Movement + Load + Time + Movement:Game + Movement:Load + Load:Game + Time:Game + Time:Movement + Time:Load + Movement:Load:Game + Movement:Load:Time + Movement:Game:Time + Load:Game:Time + Movement:Load:Game:Time + (1|ID), data = DATA)
+model <- lmer(stabilityIndex ~ 1 + Game + Movement + Load + Movement:Game + Movement:Load + Load:Game + Movement:Load:Game + (1|ID), data = DATA)
 summary(model)
 
 Anova(model, type=3, test.statistic = "F")
@@ -48,16 +46,3 @@ summary(emm_mvtGame)
 
 # Run targeted comparisons with Bonferroni correction
 contrast(emm_mvtGame, contrast_mvtGame, adjust = "bonferroni")
-
-## Compute post hoc for Movement * Load interaction
-contrast_mvtLoad <- list(
-  "Tap ST - Tap DT"   = c(1, 0, -1, 0),  
-  "Walk ST - Walk DT" = c(0, 1, 0, -1),
-  "Tap ST - Walk ST"  = c(1, -1, 0, 0),
-  "Tap DT - Walk DT"  = c(0, 0, 1, -1)
-)
-emm_mvtLoad <- emmeans(model, ~ Movement * Load)
-summary(emm_mvtLoad)
-
-# Run targeted comparisons with Bonferroni correction
-contrast(emm_mvtLoad, contrast_mvtLoad, adjust = "bonferroni")

@@ -5,6 +5,7 @@ clc;
 % Declare paths
 pathResults = '/Users/claraziane/Library/CloudStorage/OneDrive-UniversitedeMontreal/Projets/projectTraining/Results/';
 addpath('/Users/claraziane/Documents/Académique/Informatique/projectFig/'); %Functions for figures
+addpath('/Users/claraziane/Documents/Académique/Informatique/projetDT')
 
 Participants = {'P04'; 'P07'; 'P10'; 'P11'; 'P12'; 'P13'; 'P16'; 'P18'; 'P21'; 'P23'; 'P25'; 'P26'; 'P27'; 'P29'; 'P36'; 'P37'; 'P39'; 'P40'; 'P41'; 'P44'}; %RW
 Sessions     = {'RW'; 'FB'};
@@ -25,8 +26,6 @@ Scores = readtable([pathResults 'All/all-scores.csv']);
 
 % Find participant line in CSV file
 participantLine = Scores.subject;
-
-iPlot = 0;
 
 % Preallocate matrix
 vectorDir    = nan(length(Participants), length(Comparisons), length(Sessions));
@@ -70,29 +69,27 @@ for iSession = 1:length(Sessions)
         end % End Comparisons
 
 %         % Save results
-%         save([pathParticipant '/resultsBAASTA.mat'], 'resultsBAASTA');
+        save([pathParticipant '/resultsBAASTA.mat'], 'resultsBAASTA');
         clear resultsBAASTA
 
     end % End Participants
 
     % Remove outliers
     vectorDir(:, :, iSession)    = removeOutliers(vectorDir(:, :, iSession));
-    vectorLength(:, :, iSession) = removeOutliers(vectorDir(:, :, iSession));
-    rLogit(:, :, iSession)       = removeOutliers(vectorDir(:, :, iSession));
-
-    % Plot
-    plotScatter(vectorDir(:, :, iSession), Comparisons, 'BAASTA', 'Synchronization Accuracy (°)');
-    plotScatter(vectorLength(:, :, iSession), Comparisons, 'BAASTA', 'Synchronization Consistency');
-    plotScatter(rLogit(:, :, iSession), Comparisons, 'BAASTA', 'Synchronization Consistency (logit)');
-
-    % Save plots
-    saveas(figure(iPlot + 1), [pathResults '/All/' Sessions{iSession} '/BAASTA/fig_syncAccuracy_noOutliers.png'])
-    saveas(figure(iPlot + 2), [pathResults '/All/' Sessions{iSession} '/BAASTA/fig_syncConsistencyRaw_noOutliers.png'])
-    saveas(figure(iPlot + 3), [pathResults '/All/' Sessions{iSession} '/BAASTA/fig_syncConsistencyLogit_noOutliers.png'])
-
-    iPlot = iPlot + 3;
+    vectorLength(:, :, iSession) = removeOutliers(vectorLength(:, :, iSession));
+    rLogit(:, :, iSession)       = removeOutliers(rLogit(:, :, iSession));
 
 end % End Sessions 
+
+% Plot
+plotScatter(reshape(vectorDir, size(vectorDir,1), [], 1), Comparisons, Sessions,'Synchronization Accuracy (°)');
+plotScatter(reshape(vectorLength, size(vectorLength,1), [], 1), Comparisons, Sessions, 'Synchronization Consistency');
+plotScatter(reshape(rLogit, size(rLogit,1), [], 1), Comparisons, Sessions, 'Synchronization Consistency (logit)');
+
+% Save plots
+saveas(figure(1), [pathResults '/All/BAASTA/fig_syncAccuracy_noOutliers.png'])
+saveas(figure(2), [pathResults '/All/BAASTA/fig_syncConsistencyRaw_noOutliers.png'])
+saveas(figure(3), [pathResults '/All/BAASTA/fig_syncConsistencyLogit_noOutliers.png'])
     
 % Compute delta perf
 deltaDir    = vectorDir(:,2:2:end,:) - vectorDir(:,1:2:end-1,:);
@@ -100,12 +97,11 @@ deltaLength = vectorLength(:,2:2:end,:) - vectorLength(:,1:2:end-1,:);
 deltaLogit  = rLogit(:,2:2:end,:) - rLogit(:,1:2:end-1,:);
 
 % Plot both sessions side by side
-plotScatter(deltaDir, {'ST'}, Sessions, 'Synchronization Accuracy (°)');
-plotScatter(deltaLength, {'ST'}, Sessions, 'Synchronization Consistency');
-plotScatter(deltaLogit, {'ST'}, Sessions, 'Synchronization Consistency (logit)');
+plotScatter(reshape(deltaDir, size(deltaDir,1), [],1), {'ST'}, Sessions, 'Synchronization Accuracy (°)', 2);
+plotScatter(reshape(deltaLength, size(deltaLength,1), [],1), {'ST'}, Sessions, 'Synchronization Consistency', 2);
+plotScatter(reshape(deltaLogit, size(deltaLogit,1), [],1), {'ST'}, Sessions, 'Synchronization Consistency (logit)', 2);
 
 % Save plots
-saveas(figure(iPlot + 1), [pathResults '/All/BAASTA/fig_deltaAccuracy_noOutliers.png'])
-saveas(figure(iPlot + 2), [pathResults '/All/BAASTA/fig_deltaConsistencyRaw_noOutliers.png'])
-saveas(figure(iPlot + 3), [pathResults '/All/BAASTA/fig_deltaConsistencyLogit_noOutliers.png'])
-
+saveas(figure(4), [pathResults '/All/BAASTA/fig_deltaAccuracy_noOutliers.png'])
+saveas(figure(5), [pathResults '/All/BAASTA/fig_deltaConsistencyRaw_noOutliers.png'])
+saveas(figure(6), [pathResults '/All/BAASTA/fig_deltaConsistencyLogit_noOutliers.png'])

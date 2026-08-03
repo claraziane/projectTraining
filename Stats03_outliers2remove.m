@@ -38,3 +38,9 @@ resultsTable.Power(227) = NaN; %P36 preWalkST RW
 resultsTable.Power(244) = NaN; %P37 preWalkDT RW
 resultsTable.Power(239) = NaN; %P36 postWalkST FB
 resultsTable.Power(240) = NaN; %P36 postWalkDT FB
+
+%% Behav table tapping (group effect) (July 31st, 2026)
+resultsTable.CV(174) = NaN;
+resultsTable.CV(171) = NaN;
+resultsTable.CV(234) = NaN;
+resultsTable.CV(231) = NaN;
